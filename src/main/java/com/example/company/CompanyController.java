@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/companies")
@@ -44,4 +45,20 @@ public class CompanyController {
                 .findFirst()
                 .orElse(null);
     }
+
+    @PutMapping("{id}")
+    public Company update(@PathVariable int id, @RequestBody Map<String, String> updates) {
+        for (int i = 0; i < companies.size(); i++) {
+            Company c = companies.get(i);
+            if (c.id() == id) {
+                String name = updates.getOrDefault("name", c.name());
+                Company updated = new Company(id, name);
+                companies.set(i, updated);
+                return updated;
+            }
+        }
+        return null;
+    }
+
+
 }

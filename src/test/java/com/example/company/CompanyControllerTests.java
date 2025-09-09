@@ -90,4 +90,26 @@ public class CompanyControllerTests {
                 .andExpect(jsonPath("$.name").value("spring"));
     }
 
+    @Test
+    void should_update_company_name_when_put() throws Exception {
+        Company company = controller.create(new Company(null, "spring"));
+        String requestBody = """
+                {
+                    "name": "springboot"
+                }
+                """;
+
+        MockHttpServletRequestBuilder request = put("/companies/" + company.id())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody);
+
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(company.id()))
+                .andExpect(jsonPath("$.name").value("springboot"));
+    }
+
+
+
+
 }
