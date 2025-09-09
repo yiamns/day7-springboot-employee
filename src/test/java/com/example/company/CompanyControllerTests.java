@@ -1,7 +1,8 @@
-package com.exameple.company;
+package com.example.company;
 
 import com.example.company.Company;
 import com.example.company.CompanyController;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -19,10 +20,16 @@ public class CompanyControllerTests {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private CompanyController controller;
+
+    @BeforeEach
+    void setUp() {
+        controller.clear();
+    }
+
     @Test
     void should_return_company_list_when_get_companies() throws Exception {
-
-        CompanyController controller = new CompanyController();
 
         controller.create(new Company(null, "spring"));
         controller.create(new Company(null, "OOCL"));
