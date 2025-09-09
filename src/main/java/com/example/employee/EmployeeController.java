@@ -41,13 +41,25 @@ public class EmployeeController {
         List<Employee> result = new ArrayList<>();
         if (gender == null){
             return employees;
-        }
-        for (Employee e : employees) {
-            if (e.gender().compareToIgnoreCase(gender) == 0) {
-                result.add(e);
+        }else {
+            for (Employee e : employees) {
+                if (e.gender().compareToIgnoreCase(gender) == 0) {
+                    result.add(e);
+                }
             }
+            return result;
         }
-        return result;
+
+    }
+
+    @GetMapping
+    public List<Employee> showPageSize(@RequestParam(required = false) int page, @RequestParam(required = false) int pageSize) {
+        int start = (page - 1) * pageSize;
+        int end = Math.min(start + pageSize, employees.size());
+        if (start >= employees.size()) {
+            return new ArrayList<>();
+        }
+        return employees.subList(start, end);
     }
 
     @PutMapping("{id}")

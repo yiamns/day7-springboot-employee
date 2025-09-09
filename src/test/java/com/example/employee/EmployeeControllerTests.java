@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -151,6 +152,7 @@ public class EmployeeControllerTests {
         controller.create(new Employee(null, "Lily", 22, "Female", 5000.0));
         controller.create(new Employee(null, "Lily", 23, "Female", 5000.0));
         controller.create(new Employee(null, "Lily", 24, "Female", 5000.0));
+        controller.create(new Employee(null, "Lily", 24, "Female", 5000.0));
 
         MockHttpServletRequestBuilder request = get("/employees?page=1&size=5")
                 .contentType(MediaType.APPLICATION_JSON);
@@ -163,6 +165,7 @@ public class EmployeeControllerTests {
                 .andExpect(jsonPath("$[0].age").value(expect.age()))
                 .andExpect(jsonPath("$[0].gender").value(expect.gender()))
                 .andExpect(jsonPath("$[0].salary").value(expect.salary()));
+    }
 
 
 }
