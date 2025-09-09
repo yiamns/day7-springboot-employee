@@ -53,7 +53,7 @@ public class EmployeeController {
             int start = (page - 1) * size;
             int end = Math.min(start + size, result.size());
             if (start <= result.size()) {
-                result = employees.subList(start, end);
+                result = result.subList(start, end);
             } else {
                 result = new ArrayList<>();
             }
