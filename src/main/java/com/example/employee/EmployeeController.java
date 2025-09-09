@@ -42,11 +42,9 @@ public class EmployeeController {
         if (gender == null) {
             result = employees;
         }else {
-            for (Employee e : employees) {
-                if (e.gender().compareToIgnoreCase(gender) == 0) {
-                    result.add(e);
-                }
-            }
+            result = employees.stream()
+                    .filter(e -> e.gender().equalsIgnoreCase(gender))
+                    .toList();
         }
 
         if (page != null && size != null) {
@@ -99,14 +97,14 @@ public class EmployeeController {
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Employee deleteEmployee(@PathVariable int id) {
-        for (int i = 0; i < employees.size(); i++) {
-            Employee emp = employees.get(i);
-            if (emp.id() == id) {
-                employees.remove(i);
-                return emp;
-            }
-        }
-        return null;
+        return employees.stream()
+                .filter(emp -> emp.id() == id)
+                .findFirst()
+                .map(emp -> {
+                    employees.remove(emp);
+                    return emp;
+                })
+                .orElse(null);
     }
 
 }
