@@ -1,15 +1,15 @@
 package com.example.company;
 
-import com.example.company.Company;
-import com.example.company.CompanyController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -34,7 +34,10 @@ public class CompanyControllerTests {
         controller.create(new Company(null, "spring"));
         controller.create(new Company(null, "OOCL"));
 
-        mockMvc.perform(get("/companies"))
+        MockHttpServletRequestBuilder request = get("/companies")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(request)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2))
                 .andExpect(jsonPath("$[0].name").value("spring"))
@@ -45,7 +48,10 @@ public class CompanyControllerTests {
     void should_return_specific_company_when_get_by_id() throws Exception {
         Company company = controller.create(new Company(null, "spring"));
 
-        mockMvc.perform(get("/companies/" + company.id()))
+        MockHttpServletRequestBuilder request = get("/companies/" + company.id())
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(request)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(company.id()))
                 .andExpect(jsonPath("$.name").value("spring"));
@@ -57,10 +63,31 @@ public class CompanyControllerTests {
             controller.create(new Company(null, "company" + i));
         }
 
-        mockMvc.perform(get("/companies?page=1&size=5"))
+        MockHttpServletRequestBuilder request = get("/companies?page=1&size=5")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(request)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(3))
                 .andExpect(jsonPath("$[0].name").value("company5"));
+    }
+
+    @Test
+    void should_create_company_when_post() throws Exception {
+        String requestBody = """
+                {
+                    "name": "spring"
+                }
+                """;
+
+        MockHttpServletRequestBuilder request = post("/companies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody);
+
+        mockMvc.perform(request)
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.name").value("spring"));
     }
 
 }
