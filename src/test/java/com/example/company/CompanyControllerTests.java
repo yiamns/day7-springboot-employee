@@ -51,4 +51,16 @@ public class CompanyControllerTests {
                 .andExpect(jsonPath("$.name").value("spring"));
     }
 
+    @Test
+    void should_return_paged_companies_when_get_with_page_and_size() throws Exception {
+        for (int i = 0; i < 8; i++) {
+            controller.create(new Company(null, "company" + i));
+        }
+
+        mockMvc.perform(get("/companies?page=1&size=5"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(3))
+                .andExpect(jsonPath("$[0].name").value("company5"));
+    }
+
 }
