@@ -37,29 +37,29 @@ public class EmployeeController {
     }
 
     @GetMapping
-    public List<Employee> index(@RequestParam(required = false) String gender) {
+    public List<Employee> index(@RequestParam(required = false) String gender, @RequestParam(required = false) Integer page, @RequestParam(required = false) Integer size) {
         List<Employee> result = new ArrayList<>();
-        if (gender == null){
-            return employees;
+        if (gender == null) {
+            result = employees;
         }else {
             for (Employee e : employees) {
                 if (e.gender().compareToIgnoreCase(gender) == 0) {
                     result.add(e);
                 }
             }
-            return result;
         }
 
-    }
-
-    @GetMapping
-    public List<Employee> showPageSize(@RequestParam(required = false) int page, @RequestParam(required = false) int pageSize) {
-        int start = (page - 1) * pageSize;
-        int end = Math.min(start + pageSize, employees.size());
-        if (start >= employees.size()) {
-            return new ArrayList<>();
+        if (page != null && size != null) {
+            int start = (page - 1) * size;
+            int end = Math.min(start + size, result.size());
+            if (start <= result.size()) {
+                result = employees.subList(start, end);
+            } else {
+                result = new ArrayList<>();
+            }
         }
-        return employees.subList(start, end);
+        return result;
+
     }
 
     @PutMapping("{id}")
