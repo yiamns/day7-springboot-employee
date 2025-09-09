@@ -82,7 +82,10 @@ public class EmployeeController {
                     gender = (String) updates.get("gender");
                 }
                 if (updates.containsKey("salary")) {
-                    salary = (Double) updates.get("salary");
+                    Object salaryObj = updates.get("salary");
+                    if (salaryObj instanceof Number) {
+                        salary = ((Number) salaryObj).doubleValue();
+                    }
                 }
 
                 Employee updated = new Employee(id, name, age, gender, salary);
