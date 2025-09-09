@@ -109,7 +109,16 @@ public class CompanyControllerTests {
                 .andExpect(jsonPath("$.name").value("springboot"));
     }
 
+    @Test
+    void should_delete_company_when_delete() throws Exception {
+        Company company = controller.create(new Company(null, "spring"));
 
+        mockMvc.perform(delete("/companies/" + company.id()))
+                .andExpect(status().isNoContent());
 
+        mockMvc.perform(get("/companies/" + company.id()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").doesNotExist());
+    }
 
 }
