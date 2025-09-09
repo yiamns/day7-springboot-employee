@@ -9,6 +9,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import java.util.stream.IntStream;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -147,11 +149,8 @@ public class EmployeeControllerTests {
     @Test
     void should_return_page_employees_when_list_page_and_size() throws Exception {
         Employee expect = controller.create(new Employee(null, "John Smith", 32, "Male", 5000.0));
-        controller.create(new Employee(null, "Lily", 21, "Female", 5000.0));
-        controller.create(new Employee(null, "Lily", 22, "Female", 5000.0));
-        controller.create(new Employee(null, "Lily", 23, "Female", 5000.0));
-        controller.create(new Employee(null, "Lily", 24, "Female", 5000.0));
-        controller.create(new Employee(null, "Lily", 24, "Female", 5000.0));
+        IntStream.rangeClosed(21, 26)
+                .forEach(i -> controller.create(new Employee(null, "Lily", i, "Female", 5000.0)));
 
         MockHttpServletRequestBuilder request = get("/employees?page=1&size=5")
                 .contentType(MediaType.APPLICATION_JSON);
@@ -165,6 +164,5 @@ public class EmployeeControllerTests {
                 .andExpect(jsonPath("$[0].gender").value(expect.gender()))
                 .andExpect(jsonPath("$[0].salary").value(expect.salary()));
     }
-
 
 }
