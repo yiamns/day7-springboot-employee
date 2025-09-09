@@ -36,4 +36,12 @@ public class CompanyController {
         companies.add(newCompany);
         return newCompany;
     }
+
+    @GetMapping("{id}")
+    public Company getById(@PathVariable int id) {
+        return companies.stream()
+                .filter(c -> c.id() == id)
+                .findFirst()
+                .orElse(null);
+    }
 }

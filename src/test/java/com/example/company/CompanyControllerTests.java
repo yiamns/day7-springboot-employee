@@ -41,4 +41,14 @@ public class CompanyControllerTests {
                 .andExpect(jsonPath("$[1].name").value("OOCL"));
     }
 
+    @Test
+    void should_return_specific_company_when_get_by_id() throws Exception {
+        Company company = controller.create(new Company(null, "spring"));
+
+        mockMvc.perform(get("/companies/" + company.id()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(company.id()))
+                .andExpect(jsonPath("$.name").value("spring"));
+    }
+
 }
